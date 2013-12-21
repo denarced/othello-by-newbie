@@ -65,65 +65,11 @@ public class Main {
         }
 
         int[] k = { syote.codePointAt(1) , syote.codePointAt(0) };
-        if (k[1] < 80) {
-            k[1] = k[1] - 65;
-        } else {
-            k[1] = k[1] - 97;
-        }
         k[0] -= 49;
-        if (PELITAULU.get(k[0]).get(k[1]) == tyhja) {  } else {
-            return false;
-        }
-        boolean a = true;
-        char etsittava;
-        char oma;
-        if (mVuoro) {
-            etsittava = valkoinen;
-            oma = musta;
+        k[1] -= (k[1] < 80) ? 65 : 97;
 
-        } else {
-            etsittava = musta;
-            oma = valkoinen;
-        }
-        for (byte i = -1; i <= 1; i++) {
-            for (byte j = -1; j <= 1; j++) {
-                if (i == 0 && j == 0) {
-                    continue;
-                }
-
-                boolean r = false; //onko eka viereinen vastustajan väriä
-                boolean s = false;//löytyykö tästä suunnasta oman värinen nappi
-                if (PELITAULU.get(k[0] + i).get(k[1] + j) == etsittava) {
-                    r = true;
-                }
-                int[] loydOma = new int[2]; //löydetty oma merkki
-                if (r) {
-                    for (byte l = 2; l < 8; l++) {
-                        int x = k[0] + (l * i);
-                        int y = k[1] + (l * j);
-                        if (x < 0 || x > 7 || y < 0 || y > 7) {
-                            break;
-                        }
-                        if (PELITAULU.get(x).get(y) == oma) {
-                            s = true;
-                            loydOma[0] = x;
-                            loydOma[1] = y;
-                            break;
-                        }
-                        if (PELITAULU.get(x).get(y) == etsittava) {
-                            continue;
-                        }
-                        if (PELITAULU.get(x).get(y) == tyhja) {
-                            break;
-                        }
-                    }
-                }
-                if (r && s) {
-
-                }
-            }
-        }
-        if (a) {
+        boolean movingToEmptySpace = PELITAULU.get(k[0]).get(k[1]) == tyhja;
+        if (!movingToEmptySpace) {
             return false;
         }
 
