@@ -7,11 +7,11 @@ import java.util.List;
 public class Main {
     public static final int SIZE = 8;
     public static final List<List<Character>> PELITAULU = createMatrix(SIZE);
-    public static char valkoinen = 'O';
-    public static char musta = 'X';
-    public static char tyhja = ' ';
+    public static final char valkoinen = 'O';
+    public static final char musta = 'X';
+    public static final char tyhja = ' ';
     public static boolean mVuoro = true;
-    public static byte[] byteTilanne = { 2, 2 };
+    public static final byte[] byteTilanne = { 2, 2 };
 
     public static void main(String[] args) {
         alusta();
@@ -36,6 +36,20 @@ public class Main {
         return matrix;
     }
 
+    public static boolean areCoordinatesValid(String coordinates) {
+        if (coordinates.length() < 2) {
+            return false;
+        }
+        int[] k = { coordinates.codePointAt(1) , coordinates.codePointAt(0) };
+
+        boolean validAlpha =
+            'a' <= k[1] && k[1] <= 'h' ||
+            'A' <= k[1] && k[1] <= 'H';
+        boolean validNum = '1' <= k[0] && k[0] <= '8';
+
+        return validAlpha && validNum;
+    }
+
     public static boolean siirto() {
         Console koso = System.console();
         if (mVuoro) {
@@ -46,16 +60,11 @@ public class Main {
         System.out.println(" vuoro");
         System.out.print("Anna koordinaatit: ");
         String syote = koso.readLine();
-        if (syote.length() == 2) {  } else {
+        if (!areCoordinatesValid(syote)) {
             return false;
         }
+
         int[] k = { syote.codePointAt(1) , syote.codePointAt(0) };
-        if (k[1] <= 72 && k[1] >= 65 || k[1] <= 104 && k[1] >= 97) {  } else {
-            return false;
-        }
-        if (k[0] >= 49 && k[0] <= 56) {  } else {
-            return false;
-        }
         if (k[1] < 80) {
             k[1] = k[1] - 65;
         } else {
