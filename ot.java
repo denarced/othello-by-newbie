@@ -1,4 +1,6 @@
 import java.io.Console;
+import java.util.List;
+import java.util.ArrayList;
 class ot {
     public static char[][] pelitaulu = new char[8][8];
     public static char valkoinen = 'O';
@@ -114,27 +116,50 @@ class ot {
             }
         }
     }
+
+    public static String horizontalLine(String left, char hor, char mid, char right) {
+        String s = left;
+        for (int i = 0; i < 7; ++i) {
+            s += hor;
+            s += mid;
+        }
+        return s + hor + right;
+    }
+
+    public static String numberedLine(String left, List<Character> buttons, char mid) {
+        String s = left;
+        for (Character each: buttons) {
+            s += each;
+            s += mid;
+        }
+        return s;
+    }
+
     public static void tulosta() {
         tilanne();
+
         System.out.println("Musta ( " + musta + " ) .. " + byteTilanne[0]);
         System.out.println("Valkoinen ( " + valkoinen + " ) .. " + byteTilanne[1]);
         System.out.println("  A B C D E F G H");
+
         char lt = '╔', hor = '═', rt = '╗';
         char cross = '╬', vert = '║', right = '╣';
         char lb = '╚', bottom = '╩', rb = '╝';
-        System.out.println(" " + lt + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + rt);
+
+        System.out.println(horizontalLine(" " + lt, hor, cross, rt));
         for (byte i = 0; i < pelitaulu.length; i++) {
-            System.out.print(i + 1);
-            System.out.print(vert);
+            List<Character> buttons = new ArrayList<Character>();
             for (byte j = 0; j < pelitaulu.length; j++) {
-                System.out.print(pelitaulu[i][j]);
-                System.out.print(vert);
+                buttons.add(pelitaulu[i][j]);
             }
-            System.out.println();
+            String numLine = numberedLine("" + (i+1) + vert, buttons, vert);
+            System.out.println(numLine);
+
             if (i == (pelitaulu.length - 1)) {
-                System.out.println(" " + lb + hor + bottom + hor + bottom + hor + bottom + hor + bottom + hor + bottom + hor + bottom + hor + bottom + hor + rb);
+                System.out.println(horizontalLine(" " + lb, hor, bottom, rb));
             } else {
-                System.out.println(" " + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + right);
+                System.out.println(
+                    horizontalLine(" " + cross, hor, cross, right));
             }
         }
     }
