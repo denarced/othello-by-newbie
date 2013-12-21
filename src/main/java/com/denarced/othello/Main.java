@@ -5,20 +5,17 @@ import java.util.List;
 
 public class Main {
     public static final int SIZE = 8;
-    public static final List<List<Character>> PELITAULU = createMatrix(SIZE);
     public static final char valkoinen = 'O';
     public static final char musta = 'X';
-    public static final char tyhja = ' ';
     public static boolean mVuoro = true;
-    public static final byte[] byteTilanne = { 2, 2 };
 
     public static void main(String[] args) {
-        alusta();
+        final Board board = new ListBoard(SIZE);
+        alusta(board);
 
         final Ui ui = new Cli(musta, valkoinen);
-        tilanne();
-        ui.beginTurn(mVuoro, byteTilanne[0], byteTilanne[1], PELITAULU);
-        boolean tulos = siirto(ui);
+        ui.beginTurn(mVuoro, board);
+        boolean tulos = siirto(ui, board);
         System.out.println(tulos);
     }
 
@@ -51,7 +48,7 @@ public class Main {
         return validAlpha && validNum;
     }
 
-    public static boolean siirto(Ui ui) {
+    public static boolean siirto(Ui ui, Board board) {
         String syote = ui.askCoordinates(mVuoro);
         if (!areCoordinatesValid(syote)) {
             return false;
@@ -61,47 +58,17 @@ public class Main {
         k[0] -= 49;
         k[1] -= (k[1] < 80) ? 65 : 97;
 
-        boolean movingToEmptySpace = PELITAULU.get(k[0]).get(k[1]) == tyhja;
-        if (!movingToEmptySpace) {
+        if (board.at(k[1], k[0]) != CellState.NONE) {
             return false;
         }
 
         return true;
     }
 
-    public static void alusta() {
-        for (byte i = 0; i < SIZE; i++) {
-            for (byte j = 0; j < SIZE; j++) {
-                if (i == 3 && j == 3) {
-                    PELITAULU.get(i).set(j, musta);
-                } else if (i == 3 && j == 4) {
-                    PELITAULU.get(i).set(j, valkoinen);
-                } else if (i == 4 && j == 3) {
-                    PELITAULU.get(i).set(j, valkoinen);
-                } else if (i == 4 && j == 4) {
-                    PELITAULU.get(i).set(j, musta);
-                } else {
-                    PELITAULU.get(i).set(j, tyhja);
-                }
-            }
-        }
-    }
-
-    public static void tilanne() {
-        byte mustia = 0;
-        byte valkoisia = 0;
-        for (byte i = 0; i < PELITAULU.size(); i++) {
-            for (byte j = 0; j < PELITAULU.size(); j++) {
-                if (PELITAULU.get(i).get(j).equals(musta)) {
-                    mustia++;
-                } else if (PELITAULU.get(i).get(j).equals(valkoinen)) {
-                    valkoisia++;
-                } else {
-
-                }
-            }
-        }
-        byteTilanne[0] = mustia;
-        byteTilanne[1] = valkoisia;
+    public static void alusta(Board board) {
+        board.add(3, 3, CellState.BLACK);
+        board.add(3, 4, CellState.WHITE);
+        board.add(4, 3, CellState.WHITE);
+        board.add(4, 4, CellState.BLACK);
     }
 }

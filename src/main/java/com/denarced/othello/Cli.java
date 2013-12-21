@@ -1,7 +1,9 @@
 package com.denarced.othello;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author denarced
@@ -9,10 +11,16 @@ import java.util.List;
 public class Cli implements Ui {
     private final char blacksButton;
     private final char whitesButton;
+    private final Map<CellState, Character> cellStateCharacterMap =
+        new HashMap<CellState, Character>();
 
     public Cli(char blacksButton, char whitesButton) {
         this.blacksButton = blacksButton;
         this.whitesButton = whitesButton;
+
+        cellStateCharacterMap.put(CellState.BLACK, blacksButton);
+        cellStateCharacterMap.put(CellState.WHITE, whitesButton);
+        cellStateCharacterMap.put(CellState.NONE, ' ');
     }
 
     private String horizontalLine(String left, char hor, char mid, char right) {
@@ -34,14 +42,11 @@ public class Cli implements Ui {
     }
 
     @Override
-    public void beginTurn(
-        boolean blacksTurn,
-        int blacksPoints,
-        int whitesPoints,
-        List<List<Character>> board) {
-
-        System.out.println("Musta ( " + blacksButton + " ) .. " + blacksPoints);
-        System.out.println("Valkoinen ( " + whitesButton + " ) .. " + whitesPoints);
+    public void beginTurn(boolean blacksTurn, Board board) {
+        System.out.println("Musta ( " + blacksButton + " ) .. " +
+            board.points(CellState.BLACK));
+        System.out.println("Valkoinen ( " + whitesButton + " ) .. " +
+            board.points(CellState.WHITE));
         System.out.println("  A B C D E F G H");
 
         char lt = '╔', hor = '═', rt = '╗';
@@ -53,7 +58,7 @@ public class Cli implements Ui {
         for (byte i = 0; i < boardSize; i++) {
             List<Character> buttons = new ArrayList<Character>();
             for (byte j = 0; j < boardSize; j++) {
-                buttons.add(board.get(i).get(j));
+                buttons.add(cellStateCharacterMap.get(board.at(i, j)));
             }
             String numLine = numberedLine("" + (i+1) + vert, buttons, vert);
             System.out.println(numLine);

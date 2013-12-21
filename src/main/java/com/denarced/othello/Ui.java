@@ -1,16 +1,9 @@
 package com.denarced.othello;
 
-import java.util.List;
-
 /**
  * @author denarced
  */
 public interface Ui {
-    void beginTurn(
-        boolean blacksTurn,
-        int blacksPoints,
-        int whitesPoints,
-        List<List<Character>> board);
-
+    void beginTurn(boolean blacksTurn, Board board);
     String askCoordinates(boolean blacksTurn);
 }
