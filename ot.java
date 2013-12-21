@@ -1,8 +1,8 @@
 import java.io.Console;
 class ot {
     public static char[][] pelitaulu = new char[8][8];
-    public static char valkoinen = (char)219;
-    public static char musta = (char)176;
+    public static char valkoinen = 'O';
+    public static char musta = 'X';
     public static char tyhja = ' ';
     public static boolean mVuoro = true;
     public static byte[] byteTilanne = { 2, 2 };
@@ -119,19 +119,22 @@ class ot {
         System.out.println("Musta ( " + musta + " ) .. " + byteTilanne[0]);
         System.out.println("Valkoinen ( " + valkoinen + " ) .. " + byteTilanne[1]);
         System.out.println("  A B C D E F G H");
-        System.out.println(" " + (char)201 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)187);
+        char lt = '╔', hor = '═', rt = '╗';
+        char cross = '╬', vert = '║', right = '╣';
+        char lb = '╚', bottom = '╩', rb = '╝';
+        System.out.println(" " + lt + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + rt);
         for (byte i = 0; i < pelitaulu.length; i++) {
             System.out.print(i + 1);
-            System.out.print((char)186);
+            System.out.print(vert);
             for (byte j = 0; j < pelitaulu.length; j++) {
                 System.out.print(pelitaulu[i][j]);
-                System.out.print((char)186);
+                System.out.print(vert);
             }
             System.out.println();
             if (i == (pelitaulu.length - 1)) {
-                System.out.println(" " + (char)200 + (char)205 + (char)202 + (char)205 + (char)202 + (char)205 + (char)202 + (char)205 + (char)202 + (char)205 + (char)202 + (char)205 + (char)202 + (char)205 + (char)202 + (char)205 + (char)188);
+                System.out.println(" " + lb + hor + bottom + hor + bottom + hor + bottom + hor + bottom + hor + bottom + hor + bottom + hor + bottom + hor + rb);
             } else {
-                System.out.println(" " + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)206 + (char)205 + (char)185);
+                System.out.println(" " + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + cross + hor + right);
             }
         }
     }
