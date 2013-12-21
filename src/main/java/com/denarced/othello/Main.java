@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static char[][] pelitaulu = new char[8][8];
+    public static final int SIZE = 8;
+    public static final List<List<Character>> PELITAULU = createMatrix(SIZE);
     public static char valkoinen = 'O';
     public static char musta = 'X';
     public static char tyhja = ' ';
@@ -18,6 +19,21 @@ public class Main {
         boolean tulos;
         tulos = siirto();
         System.out.println(tulos);
+    }
+
+    public static List<List<Character>> createMatrix(int size) {
+        List<List<Character>> matrix = new ArrayList<List<Character>>(size);
+        for (int row = 0; row < size; ++row) {
+            List<Character> rowList = new ArrayList<Character>(size);
+
+            for (int col = 0; col < size; ++col) {
+                rowList.add(' ');
+            }
+
+            matrix.add(rowList);
+        }
+
+        return matrix;
     }
 
     public static boolean siirto() {
@@ -46,7 +62,7 @@ public class Main {
             k[1] = k[1] - 97;
         }
         k[0] -= 49;
-        if (pelitaulu[k[0]][k[1]] == tyhja) {  } else {
+        if (PELITAULU.get(k[0]).get(k[1]) == tyhja) {  } else {
             return false;
         }
         boolean a = true;
@@ -68,7 +84,7 @@ public class Main {
 
                 boolean r = false; //onko eka viereinen vastustajan väriä
                 boolean s = false;//löytyykö tästä suunnasta oman värinen nappi
-                if (pelitaulu[k[0] + i][k[1] + j] == etsittava) {
+                if (PELITAULU.get(k[0] + i).get(k[1] + j) == etsittava) {
                     r = true;
                 }
                 int[] loydOma = new int[2]; //löydetty oma merkki
@@ -79,16 +95,16 @@ public class Main {
                         if (x < 0 || x > 7 || y < 0 || y > 7) {
                             break;
                         }
-                        if (pelitaulu[x][y] == oma) {
+                        if (PELITAULU.get(x).get(y) == oma) {
                             s = true;
                             loydOma[0] = x;
                             loydOma[1] = y;
                             break;
                         }
-                        if (pelitaulu[x][y] == etsittava) {
+                        if (PELITAULU.get(x).get(y) == etsittava) {
                             continue;
                         }
-                        if (pelitaulu[x][y] == tyhja) {
+                        if (PELITAULU.get(x).get(y) == tyhja) {
                             break;
                         }
                     }
@@ -106,18 +122,18 @@ public class Main {
     }
 
     public static void alusta() {
-        for (byte i = 0; i < pelitaulu.length; i++) {
-            for (byte j = 0; j < pelitaulu.length; j++) {
+        for (byte i = 0; i < SIZE; i++) {
+            for (byte j = 0; j < SIZE; j++) {
                 if (i == 3 && j == 3) {
-                    pelitaulu[i][j] = musta;
+                    PELITAULU.get(i).set(j, musta);
                 } else if (i == 3 && j == 4) {
-                    pelitaulu[i][j] = valkoinen;
+                    PELITAULU.get(i).set(j, valkoinen);
                 } else if (i == 4 && j == 3) {
-                    pelitaulu[i][j] = valkoinen;
+                    PELITAULU.get(i).set(j, valkoinen);
                 } else if (i == 4 && j == 4) {
-                    pelitaulu[i][j] = musta;
+                    PELITAULU.get(i).set(j, musta);
                 } else {
-                    pelitaulu[i][j] = tyhja;
+                    PELITAULU.get(i).set(j, tyhja);
                 }
             }
         }
@@ -153,15 +169,15 @@ public class Main {
         char lb = '╚', bottom = '╩', rb = '╝';
 
         System.out.println(horizontalLine(" " + lt, hor, cross, rt));
-        for (byte i = 0; i < pelitaulu.length; i++) {
+        for (byte i = 0; i < PELITAULU.size(); i++) {
             List<Character> buttons = new ArrayList<Character>();
-            for (byte j = 0; j < pelitaulu.length; j++) {
-                buttons.add(pelitaulu[i][j]);
+            for (byte j = 0; j < PELITAULU.size(); j++) {
+                buttons.add(PELITAULU.get(i).get(j));
             }
             String numLine = numberedLine("" + (i+1) + vert, buttons, vert);
             System.out.println(numLine);
 
-            if (i == (pelitaulu.length - 1)) {
+            if (i == (PELITAULU.size() - 1)) {
                 System.out.println(horizontalLine(" " + lb, hor, bottom, rb));
             } else {
                 System.out.println(
@@ -173,11 +189,11 @@ public class Main {
     public static void tilanne() {
         byte mustia = 0;
         byte valkoisia = 0;
-        for (byte i = 0; i < pelitaulu.length; i++) {
-            for (byte j = 0; j < pelitaulu.length; j++) {
-                if (pelitaulu[i][j] == musta) {
+        for (byte i = 0; i < PELITAULU.size(); i++) {
+            for (byte j = 0; j < PELITAULU.size(); j++) {
+                if (PELITAULU.get(i).get(j).equals(musta)) {
                     mustia++;
-                } else if (pelitaulu[i][j] == valkoinen) {
+                } else if (PELITAULU.get(i).get(j).equals(valkoinen)) {
                     valkoisia++;
                 } else {
 
