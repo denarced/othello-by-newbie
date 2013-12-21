@@ -1,7 +1,10 @@
+package com.denarced.othello;
+
 import java.io.Console;
-import java.util.List;
 import java.util.ArrayList;
-class ot {
+import java.util.List;
+
+public class ot {
     public static char[][] pelitaulu = new char[8][8];
     public static char valkoinen = 'O';
     public static char musta = 'X';
