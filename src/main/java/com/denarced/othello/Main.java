@@ -1,6 +1,5 @@
 package com.denarced.othello;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +14,11 @@ public class Main {
 
     public static void main(String[] args) {
         alusta();
-        tulosta();
-        boolean tulos;
-        tulos = siirto();
+
+        final Ui ui = new Cli(musta, valkoinen);
+        tilanne();
+        ui.beginTurn(mVuoro, byteTilanne[0], byteTilanne[1], PELITAULU);
+        boolean tulos = siirto(ui);
         System.out.println(tulos);
     }
 
@@ -50,16 +51,8 @@ public class Main {
         return validAlpha && validNum;
     }
 
-    public static boolean siirto() {
-        Console koso = System.console();
-        if (mVuoro) {
-            System.out.print("Mustan");
-        } else {
-            System.out.print("Valkoisen");
-        }
-        System.out.println(" vuoro");
-        System.out.print("Anna koordinaatit: ");
-        String syote = koso.readLine();
+    public static boolean siirto(Ui ui) {
+        String syote = ui.askCoordinates(mVuoro);
         if (!areCoordinatesValid(syote)) {
             return false;
         }
@@ -90,53 +83,6 @@ public class Main {
                 } else {
                     PELITAULU.get(i).set(j, tyhja);
                 }
-            }
-        }
-    }
-
-    public static String horizontalLine(String left, char hor, char mid, char right) {
-        String s = left;
-        for (int i = 0; i < 7; ++i) {
-            s += hor;
-            s += mid;
-        }
-        return s + hor + right;
-    }
-
-    public static String numberedLine(String left, List<Character> buttons, char mid) {
-        String s = left;
-        for (Character each: buttons) {
-            s += each;
-            s += mid;
-        }
-        return s;
-    }
-
-    public static void tulosta() {
-        tilanne();
-
-        System.out.println("Musta ( " + musta + " ) .. " + byteTilanne[0]);
-        System.out.println("Valkoinen ( " + valkoinen + " ) .. " + byteTilanne[1]);
-        System.out.println("  A B C D E F G H");
-
-        char lt = '╔', hor = '═', rt = '╗';
-        char cross = '╬', vert = '║', right = '╣';
-        char lb = '╚', bottom = '╩', rb = '╝';
-
-        System.out.println(horizontalLine(" " + lt, hor, cross, rt));
-        for (byte i = 0; i < PELITAULU.size(); i++) {
-            List<Character> buttons = new ArrayList<Character>();
-            for (byte j = 0; j < PELITAULU.size(); j++) {
-                buttons.add(PELITAULU.get(i).get(j));
-            }
-            String numLine = numberedLine("" + (i+1) + vert, buttons, vert);
-            System.out.println(numLine);
-
-            if (i == (PELITAULU.size() - 1)) {
-                System.out.println(horizontalLine(" " + lb, hor, bottom, rb));
-            } else {
-                System.out.println(
-                    horizontalLine(" " + cross, hor, cross, right));
             }
         }
     }

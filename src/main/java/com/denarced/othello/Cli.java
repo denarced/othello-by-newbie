@@ -1,0 +1,77 @@
+package com.denarced.othello;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author denarced
+ */
+public class Cli implements Ui {
+    private final char blacksButton;
+    private final char whitesButton;
+
+    public Cli(char blacksButton, char whitesButton) {
+        this.blacksButton = blacksButton;
+        this.whitesButton = whitesButton;
+    }
+
+    private String horizontalLine(String left, char hor, char mid, char right) {
+        String s = left;
+        for (int i = 0; i < 7; ++i) {
+            s += hor;
+            s += mid;
+        }
+        return s + hor + right;
+    }
+
+    private String numberedLine(String left, List<Character> buttons, char mid) {
+        String s = left;
+        for (Character each: buttons) {
+            s += each;
+            s += mid;
+        }
+        return s;
+    }
+
+    @Override
+    public void beginTurn(
+        boolean blacksTurn,
+        int blacksPoints,
+        int whitesPoints,
+        List<List<Character>> board) {
+
+        System.out.println("Musta ( " + blacksButton + " ) .. " + blacksPoints);
+        System.out.println("Valkoinen ( " + whitesButton + " ) .. " + whitesPoints);
+        System.out.println("  A B C D E F G H");
+
+        char lt = '╔', hor = '═', rt = '╗';
+        char cross = '╬', vert = '║', right = '╣';
+        char lb = '╚', bottom = '╩', rb = '╝';
+
+        final int boardSize = board.size();
+        System.out.println(horizontalLine(" " + lt, hor, cross, rt));
+        for (byte i = 0; i < boardSize; i++) {
+            List<Character> buttons = new ArrayList<Character>();
+            for (byte j = 0; j < boardSize; j++) {
+                buttons.add(board.get(i).get(j));
+            }
+            String numLine = numberedLine("" + (i+1) + vert, buttons, vert);
+            System.out.println(numLine);
+
+            if (i == (boardSize - 1)) {
+                System.out.println(horizontalLine(" " + lb, hor, bottom, rb));
+            } else {
+                System.out.println(
+                    horizontalLine(" " + cross, hor, cross, right));
+            }
+        }
+    }
+
+    @Override
+    public String askCoordinates(boolean blacksTurn) {
+        System.out.print(blacksTurn ? "Mustan" : "Valkoisen");
+        System.out.println(" vuoro");
+        System.out.print("Anna koordinaatit: ");
+        return System.console().readLine();
+    }
+}
