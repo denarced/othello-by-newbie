@@ -1,5 +1,11 @@
 syntax: glob
 
+# Specific files
+othelloByNewbie.iml
+
+# File patterns
 *.swp        # Vim swap files
 
+# Directories
 target/
+.idea/

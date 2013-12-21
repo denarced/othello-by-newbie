@@ -4,13 +4,14 @@ import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ot {
+public class Main {
     public static char[][] pelitaulu = new char[8][8];
     public static char valkoinen = 'O';
     public static char musta = 'X';
     public static char tyhja = ' ';
     public static boolean mVuoro = true;
     public static byte[] byteTilanne = { 2, 2 };
+
     public static void main(String[] args) {
         alusta();
         tulosta();
@@ -18,6 +19,7 @@ public class ot {
         tulos = siirto();
         System.out.println(tulos);
     }
+
     public static boolean siirto() {
         Console koso = System.console();
         if (mVuoro) {
@@ -102,6 +104,7 @@ public class ot {
 
         return true;
     }
+
     public static void alusta() {
         for (byte i = 0; i < pelitaulu.length; i++) {
             for (byte j = 0; j < pelitaulu.length; j++) {
@@ -166,6 +169,7 @@ public class ot {
             }
         }
     }
+
     public static void tilanne() {
         byte mustia = 0;
         byte valkoisia = 0;
