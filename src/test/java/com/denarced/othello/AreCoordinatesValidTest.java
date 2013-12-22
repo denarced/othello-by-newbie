@@ -9,96 +9,60 @@ import org.junit.Test;
 public class AreCoordinatesValidTest {
     @Test
     public void testEmptyString() {
-        // EXERCISE
-        boolean valid = Main.areCoordinatesValid("");
-
-        // VERIFY
-        Assert.assertFalse(valid);
+        exerciseAndVerify("", false);
     }
 
     @Test
     public void testTooShortString() {
-        // EXERCISE
-        boolean valid = Main.areCoordinatesValid("A");
-
-        // VERIFY
-        Assert.assertFalse(valid);
+        exerciseAndVerify("A", false);
     }
 
     @Test(expected = NullPointerException.class)
     public void testNullString() {
-        // EXERCISE
-        Main.areCoordinatesValid(null);
+        boolean irrelevant = true;
+        exerciseAndVerify(null, irrelevant);
     }
 
-    // legit with lower case
     @Test
     public void testLowerCaseAlpha() {
-        // EXERCISE
-        boolean valid = Main.areCoordinatesValid("a1");
-
-        // VERIFY
-        Assert.assertTrue(valid);
+        exerciseAndVerify("a1", true);
     }
 
-    // legit with upper case
     @Test
     public void testUpperCaseAlpha() {
-        // EXERCISE
-        boolean valid = Main.areCoordinatesValid("H8");
-
-        // VERIFY
-        Assert.assertTrue(valid);
+        exerciseAndVerify("H8", true);
     }
 
-    // legit alpha, too low num
     @Test
     public void testTooLowNum() {
-        // EXERCISE
-        boolean valid = Main.areCoordinatesValid("A0");
-
-        // VERIFY
-        Assert.assertFalse(valid);
+        exerciseAndVerify("A0", false);
     }
 
-    // legit alpha, too high num
     @Test
     public void testTooHighNum() {
-        // EXERCISE
-        boolean valid = Main.areCoordinatesValid("A9");
-
-        // VERIFY
-        Assert.assertFalse(valid);
+        exerciseAndVerify("A9", false);
     }
 
     @Test
     public void testTooHighAlpha() {
-        // EXERCISE
-        boolean valid = Main.areCoordinatesValid("I0");
-
-        // VERIFY
-        Assert.assertFalse(valid);
+        exerciseAndVerify("I0", false);
     }
-
-    // num is not num
 
     @Test
     public void testNumIsNotNum() {
-        // EXERCISE
-        boolean valid = Main.areCoordinatesValid("Aa");
-
-        // VERIFY
-        Assert.assertFalse(valid);
+        exerciseAndVerify("Aa", false);
     }
-
-    // alpha is not alpha
 
     @Test
     public void testAlphaIsNotAlpha() {
+        exerciseAndVerify("#0", false);
+    }
+
+    private void exerciseAndVerify(String coordinate, boolean expected) {
         // EXERCISE
-        boolean valid = Main.areCoordinatesValid("#0");
+        boolean valid = Main.areCoordinatesValid(coordinate);
 
         // VERIFY
-        Assert.assertFalse(valid);
+        Assert.assertEquals(expected, valid);
     }
 }
