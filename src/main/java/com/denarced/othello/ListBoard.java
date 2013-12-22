@@ -29,20 +29,31 @@ public class ListBoard implements Board {
     }
 
     @Override
-    public CellState at(int row, int col) {
-        assertCoordinates(row, col);
+    public CellState at(Coordinate coordinate) {
+        assertCoordinates(coordinate);
+
+        int row = coordinate.row();
+        int col = coordinate.col();
+
         return cellList.get(row).get(col);
     }
 
     // TODO Too low level; can't give caller that.
     @Override
-    public void add(int row, int col, CellState cellState) {
-        assertCoordinates(row, col);
+    public void add(Coordinate coordinate, CellState cellState) {
+        assertCoordinates(coordinate);
+
+        int row = coordinate.row();
+        int col = coordinate.col();
+
         cellList.get(row).set(col, cellState);
     }
 
-    private void assertCoordinates(int row, int col) {
+    private void assertCoordinates(Coordinate coordinate) {
         int size = cellList.size();
+        int row = coordinate.row();
+        int col = coordinate.col();
+
         assert 0 <= row && row <= size;
         assert 0 <= col && col <= size;
     }

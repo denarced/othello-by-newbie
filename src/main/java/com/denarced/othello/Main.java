@@ -1,44 +1,31 @@
 package com.denarced.othello;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
     public static final int SIZE = 8;
-    public static final char valkoinen = 'O';
-    public static final char musta = 'X';
+    public static final char VALKOINEN = 'O';
+    public static final char MUSTA = 'X';
     public static boolean mVuoro = true;
 
     public static void main(String[] args) {
         final Board board = new ListBoard(SIZE);
-        alusta(board);
+        final CoordinateFactory coordinateFactory = new CoordinateFactory(SIZE);
+        alusta(board, coordinateFactory);
 
-        final Ui ui = new Cli(musta, valkoinen);
+        final Ui ui = new Cli(MUSTA, VALKOINEN, coordinateFactory);
         ui.beginTurn(mVuoro, board);
-        boolean tulos = siirto(ui, board);
-        System.out.println(tulos);
-    }
-
-    public static List<List<Character>> createMatrix(int size) {
-        List<List<Character>> matrix = new ArrayList<List<Character>>(size);
-        for (int row = 0; row < size; ++row) {
-            List<Character> rowList = new ArrayList<Character>(size);
-
-            for (int col = 0; col < size; ++col) {
-                rowList.add(' ');
-            }
-
-            matrix.add(rowList);
-        }
-
-        return matrix;
+        System.out.println(siirto(ui, board, coordinateFactory));
     }
 
     public static boolean areCoordinatesValid(String coordinates) {
         if (coordinates.length() < 2) {
             return false;
         }
-        int[] k = { coordinates.codePointAt(1) , coordinates.codePointAt(0) };
+        int[] k = {
+            coordinates.codePointAt(1),
+            coordinates.codePointAt(0)};
 
         boolean validAlpha =
             'a' <= k[1] && k[1] <= 'h' ||
@@ -48,7 +35,11 @@ public class Main {
         return validAlpha && validNum;
     }
 
-    public static boolean siirto(Ui ui, Board board) {
+    public static boolean siirto(
+        Ui ui,
+        Board board,
+        CoordinateFactory coordinateFactory) {
+
         String syote = ui.askCoordinates(mVuoro);
         if (!areCoordinatesValid(syote)) {
             return false;
@@ -58,17 +49,23 @@ public class Main {
         k[0] -= 49;
         k[1] -= (k[1] < 80) ? 65 : 97;
 
-        if (board.at(k[1], k[0]) != CellState.NONE) {
+        Coordinate coordinate = coordinateFactory.getInstance(k[1], k[0]);
+        if (board.at(coordinate) != CellState.NONE) {
             return false;
         }
 
         return true;
     }
 
-    public static void alusta(Board board) {
-        board.add(3, 3, CellState.BLACK);
-        board.add(3, 4, CellState.WHITE);
-        board.add(4, 3, CellState.WHITE);
-        board.add(4, 4, CellState.BLACK);
+    public static void alusta(Board board, CoordinateFactory coordinateFactory) {
+        Map<Coordinate, CellState> map = new HashMap<Coordinate, CellState>();
+        map.put(coordinateFactory.getInstance(3, 3), CellState.BLACK);
+        map.put(coordinateFactory.getInstance(3, 4), CellState.WHITE);
+        map.put(coordinateFactory.getInstance(4, 3), CellState.WHITE);
+        map.put(coordinateFactory.getInstance(4, 4), CellState.BLACK);
+
+        for(Map.Entry<Coordinate, CellState> each: map.entrySet()) {
+            board.add(each.getKey(), each.getValue());
+        }
     }
 }

@@ -11,12 +11,18 @@ import java.util.Map;
 public class Cli implements Ui {
     private final char blacksButton;
     private final char whitesButton;
+    private final CoordinateFactory coordinateFactory;
     private final Map<CellState, Character> cellStateCharacterMap =
         new HashMap<CellState, Character>();
 
-    public Cli(char blacksButton, char whitesButton) {
+    public Cli(
+        char blacksButton,
+        char whitesButton,
+        CoordinateFactory coordinateFactory) {
+
         this.blacksButton = blacksButton;
         this.whitesButton = whitesButton;
+        this.coordinateFactory = coordinateFactory;
 
         cellStateCharacterMap.put(CellState.BLACK, blacksButton);
         cellStateCharacterMap.put(CellState.WHITE, whitesButton);
@@ -58,7 +64,8 @@ public class Cli implements Ui {
         for (byte i = 0; i < boardSize; i++) {
             List<Character> buttons = new ArrayList<Character>();
             for (byte j = 0; j < boardSize; j++) {
-                buttons.add(cellStateCharacterMap.get(board.at(i, j)));
+                Coordinate coordinate = coordinateFactory.getInstance(i, j);
+                buttons.add(cellStateCharacterMap.get(board.at(coordinate)));
             }
             String numLine = numberedLine("" + (i+1) + vert, buttons, vert);
             System.out.println(numLine);
