@@ -10,8 +10,8 @@ public class Main {
     public static boolean mVuoro = true;
 
     public static void main(String[] args) {
-        final Board board = new ListBoard(SIZE);
         final CoordinateFactory coordinateFactory = new CoordinateFactory(SIZE);
+        final Board board = new ListBoard(SIZE, coordinateFactory);
         alusta(board, coordinateFactory);
         final Ui ui = new Cli(MUSTA, VALKOINEN, coordinateFactory);
 

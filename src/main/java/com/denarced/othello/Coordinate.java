@@ -44,6 +44,6 @@ public class Coordinate {
 
     @Override
     public String toString() {
-        return String.format("Coordinate(%1d$,%2d$).", row, col);
+        return String.format("Coordinate(%d,%d).", row, col);
     }
 }
