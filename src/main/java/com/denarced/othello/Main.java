@@ -13,10 +13,23 @@ public class Main {
         final Board board = new ListBoard(SIZE);
         final CoordinateFactory coordinateFactory = new CoordinateFactory(SIZE);
         alusta(board, coordinateFactory);
-
         final Ui ui = new Cli(MUSTA, VALKOINEN, coordinateFactory);
-        ui.beginTurn(mVuoro, board);
-        System.out.println(siirto(ui, board, coordinateFactory));
+
+        while (board.moveIsPossible()) {
+            boolean playerWithTurnCanMove =
+                board.moveIsPossibleFor(mVuoro ? CellState.BLACK : CellState.WHITE);
+            if (!playerWithTurnCanMove) {
+                // TODO Tell UI that current player can't move
+                mVuoro = !mVuoro;
+            }
+
+            ui.beginTurn(mVuoro, board);
+            CellState turn = mVuoro ? CellState.BLACK : CellState.WHITE;
+            siirto(ui, board, coordinateFactory, turn);
+
+            mVuoro = !mVuoro;
+        }
+        System.out.println("Game over");
     }
 
     public static boolean areCoordinatesValid(String coordinates) {
@@ -35,26 +48,32 @@ public class Main {
         return validAlpha && validNum;
     }
 
-    public static boolean siirto(
+    public static void siirto(
         Ui ui,
         Board board,
-        CoordinateFactory coordinateFactory) {
+        CoordinateFactory coordinateFactory,
+        CellState turn) {
 
-        String syote = ui.askCoordinates(mVuoro);
-        if (!areCoordinatesValid(syote)) {
-            return false;
-        }
+        boolean moved = false;
+        do {
+            String syote = ui.askCoordinates(mVuoro);
+            if (!areCoordinatesValid(syote)) {
+                // TODO Notify UI that coordinates are invalid, try again
+                continue;
+            }
 
-        int[] k = { syote.codePointAt(1) , syote.codePointAt(0) };
-        k[0] -= 49;
-        k[1] -= (k[1] < 80) ? 65 : 97;
+            int[] k = { syote.codePointAt(1) , syote.codePointAt(0) };
+            k[0] -= 49;
+            k[1] -= (k[1] < 80) ? 65 : 97;
 
-        Coordinate coordinate = coordinateFactory.getInstance(k[1], k[0]);
-        if (board.at(coordinate) != CellState.NONE) {
-            return false;
-        }
-
-        return true;
+            Coordinate coordinate = coordinateFactory.getInstance(k[0], k[1]);
+            moved = board.isLegalAdd(coordinate, turn);
+            if (moved) {
+                board.add(coordinate, turn);
+            } else {
+                ; // TODO Notify UI that current player can't add button there
+            }
+        } while (!moved);
     }
 
     public static void alusta(Board board, CoordinateFactory coordinateFactory) {

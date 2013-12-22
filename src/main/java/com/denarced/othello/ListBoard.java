@@ -71,4 +71,21 @@ public class ListBoard implements Board {
 
         return total;
     }
+
+    @Override
+    public boolean isLegalAdd(Coordinate coordinate, CellState cellState) {
+        return coordinate.row() == 2;
+    }
+
+    @Override
+    public boolean moveIsPossible() {
+        return true;
+    }
+
+    @Override
+    public boolean moveIsPossibleFor(CellState cellState) {
+        assert cellState != CellState.NONE;
+
+        return true;
+    }
 }
