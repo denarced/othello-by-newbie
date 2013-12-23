@@ -7,8 +7,8 @@ import java.util.*;
  */
 public class ListBoard implements Board {
     private final List<List<CellState>> cellList;
-    private final Map<CellState, Set<Coordinate>> legalAdds =
-        new HashMap<CellState, Set<Coordinate>>();
+    private Map<Coordinate, List<Coordinate>> blacksAdds;
+    private Map<Coordinate, List<Coordinate>> whitesAdds;
     private final CoordinateFactory coordinateFactory;
 
     public ListBoard(int size, CoordinateFactory coordinateFactory) {
@@ -30,8 +30,12 @@ public class ListBoard implements Board {
         cellList.get(4).set(3, CellState.WHITE);
         cellList.get(4).set(4, CellState.BLACK);
 
-        legalAdds.put(CellState.BLACK, deriveLegalAdds(CellState.BLACK));
-        legalAdds.put(CellState.WHITE, deriveLegalAdds(CellState.WHITE));
+        reDeriveLegalAdds();
+    }
+
+    private void reDeriveLegalAdds() {
+        blacksAdds = deriveLegalAdds(CellState.BLACK);
+        whitesAdds = deriveLegalAdds(CellState.WHITE);
     }
 
     @Override
@@ -56,9 +60,25 @@ public class ListBoard implements Board {
 
         int row = coordinate.row();
         int col = coordinate.col();
+        CellState inverse = (cellState == CellState.BLACK)
+            ? CellState.WHITE
+            : CellState.BLACK;
+        Map<Coordinate, List<Coordinate>> legalAdds =
+            (cellState == CellState.BLACK)
+                ? blacksAdds
+                : whitesAdds;
+        assert legalAdds.containsKey(coordinate);
 
         cellList.get(row).set(col, cellState);
-        legalAdds.put(cellState, deriveLegalAdds(cellState));
+        for (Coordinate each: legalAdds.get(coordinate)) {
+            int x = each.row();
+            int y = each.col();
+            assert cellList.get(x).get(y) == inverse;
+
+            cellList.get(x).set(y, cellState);
+        }
+
+        reDeriveLegalAdds();
     }
 
     private void assertCoordinates(Coordinate coordinate) {
@@ -88,24 +108,30 @@ public class ListBoard implements Board {
     public boolean isLegalAdd(Coordinate coordinate, CellState cellState) {
         assert cellState != CellState.NONE;
 
-        return legalAdds.get(cellState).contains(coordinate);
+        Map<Coordinate, List<Coordinate>> legalAdds =
+            (cellState == CellState.BLACK)
+                ? blacksAdds
+                : whitesAdds;
+        return legalAdds.containsKey(coordinate);
     }
 
     @Override
     public boolean moveIsPossible() {
         return
-            legalAdds.get(CellState.BLACK).size() > 0 ||
-            legalAdds.get(CellState.WHITE).size() > 0;
+            blacksAdds.size() > 0 ||
+            whitesAdds.size() > 0;
     }
 
     @Override
     public boolean moveIsPossibleFor(CellState cellState) {
         assert cellState != CellState.NONE;
 
-        return legalAdds.get(cellState).size() > 0;
+        return (cellState == CellState.BLACK)
+            ? blacksAdds.size() > 0
+            : whitesAdds.size() > 0;
     }
 
-    Set<Coordinate> deriveLegalAddsToDirection(
+    Map<Coordinate, List<Coordinate>> deriveLegalAddsToDirection(
         int row,
         int col,
         int hor,
@@ -124,6 +150,7 @@ public class ListBoard implements Board {
 
         int multiplier = 0;
         boolean opponentsDiskFound = false;
+        List<Coordinate> opponentsDiskList = new ArrayList<Coordinate>();
         while (multiplier < size) {
             ++multiplier;
             int x = row + (ver * multiplier);
@@ -134,7 +161,7 @@ public class ListBoard implements Board {
                     assert row > 0;
                 }
 
-                return Collections.emptySet();
+                return Collections.emptyMap();
             }
             if (y < 0) {
                 assert hor < 0;
@@ -142,7 +169,7 @@ public class ListBoard implements Board {
                     assert col > 0;
                 }
 
-                return Collections.emptySet();
+                return Collections.emptyMap();
             }
             if (x >= size) {
                 assert ver > 0;
@@ -150,7 +177,7 @@ public class ListBoard implements Board {
                     assert row < (size - 1);
                 }
 
-                return Collections.emptySet();
+                return Collections.emptyMap();
             }
             if (y >= size) {
                 assert hor > 0;
@@ -158,58 +185,66 @@ public class ListBoard implements Board {
                     assert col < (size - 1);
                 }
 
-                return Collections.emptySet();
+                return Collections.emptyMap();
             }
 
             CellState currentCell = cellList.get(x).get(y);
             if (opponentsDiskFound) {
                 if (currentCell == CellState.NONE) {
-                    Set<Coordinate> coordinateSet = new HashSet<Coordinate>();
-                    coordinateSet.add(coordinateFactory.getInstance(x, y));
+                    Map<Coordinate, List<Coordinate>> map =
+                        new HashMap<Coordinate, List<Coordinate>>();
+                    map.put(
+                        coordinateFactory.getInstance(x, y),
+                        opponentsDiskList);
 
-                    return coordinateSet;
+                    return map;
                 } else if (currentCell == player) {
-                    return Collections.emptySet();
+                    return Collections.emptyMap();
+                } else {
+                    opponentsDiskList.add(coordinateFactory.getInstance(x, y));
                 }
             } else {
                 if (currentCell == opponent) {
+                    opponentsDiskList.add(coordinateFactory.getInstance(x, y));
                     opponentsDiskFound = true;
                 } else {
-                    return Collections.emptySet();
+                    return Collections.emptyMap();
                 }
             }
         }
 
         assert false;
-        return Collections.emptySet();
+        return Collections.emptyMap();
     }
 
-    Set<Coordinate> deriveLegalAddsFromCoordinate(
+    Map<Coordinate, List<Coordinate>> deriveLegalAddsFromCoordinate(
         int row,
         int col) {
 
-        Set<Coordinate> legalAdds = new HashSet<Coordinate>();
+        Map<Coordinate, List<Coordinate>> legalAdds =
+            new HashMap<Coordinate, List<Coordinate>>();
         for (int hor = -1; hor <= 1; ++hor) {
             for (int ver = -1; ver <= 1; ++ver) {
                 if (hor == 0 && ver == 0) {
                     continue;
                 }
 
-                legalAdds.addAll(deriveLegalAddsToDirection(row, col, hor, ver));
+                legalAdds.putAll(deriveLegalAddsToDirection(row, col, hor, ver));
             }
         }
 
         return legalAdds;
     }
 
-    private Set<Coordinate> deriveLegalAdds(CellState cellState) {
+    private Map<Coordinate, List<Coordinate>> deriveLegalAdds(CellState cellState) {
         assert cellState != CellState.NONE;
 
-        Set<Coordinate> legalAdds = new HashSet<Coordinate>();
+        Map<Coordinate, List<Coordinate>> legalAdds =
+            new HashMap<Coordinate, List<Coordinate>>();
         final int size = cellList.size();
         for (int row = 0; row < size; ++row) {
             for (int col = 0; col < size; ++col) {
-                legalAdds.addAll(deriveLegalAddsFromCoordinate(row, col));
+                legalAdds.putAll(deriveLegalAddsFromCoordinate(row, col));
             }
         }
 

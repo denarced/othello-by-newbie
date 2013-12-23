@@ -12,7 +12,6 @@ public class Main {
     public static void main(String[] args) {
         final CoordinateFactory coordinateFactory = new CoordinateFactory(SIZE);
         final Board board = new ListBoard(SIZE, coordinateFactory);
-        alusta(board, coordinateFactory);
         final Ui ui = new Cli(MUSTA, VALKOINEN, coordinateFactory);
 
         while (board.moveIsPossible()) {
@@ -74,17 +73,5 @@ public class Main {
                 ; // TODO Notify UI that current player can't add button there
             }
         } while (!moved);
-    }
-
-    public static void alusta(Board board, CoordinateFactory coordinateFactory) {
-        Map<Coordinate, CellState> map = new HashMap<Coordinate, CellState>();
-        map.put(coordinateFactory.getInstance(3, 3), CellState.BLACK);
-        map.put(coordinateFactory.getInstance(3, 4), CellState.WHITE);
-        map.put(coordinateFactory.getInstance(4, 3), CellState.WHITE);
-        map.put(coordinateFactory.getInstance(4, 4), CellState.BLACK);
-
-        for(Map.Entry<Coordinate, CellState> each: map.entrySet()) {
-            board.add(each.getKey(), each.getValue());
-        }
     }
 }

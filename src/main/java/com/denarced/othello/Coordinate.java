@@ -3,7 +3,7 @@ package com.denarced.othello;
 /**
  * @author denarced
  */
-public class Coordinate {
+public class Coordinate implements Comparable<Coordinate> {
     private final int row;
     private final int col;
 
@@ -45,5 +45,16 @@ public class Coordinate {
     @Override
     public String toString() {
         return String.format("Coordinate(%d,%d).", row, col);
+    }
+
+    @Override
+    public int compareTo(Coordinate o) {
+        Integer row = this.row;
+        if (row.equals(o.row)) {
+            Integer col = this.col;
+            return col.compareTo(o.col);
+        } else {
+            return row.compareTo(o.row);
+        }
     }
 }
