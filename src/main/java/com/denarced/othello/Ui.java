@@ -5,5 +5,6 @@ package com.denarced.othello;
  */
 public interface Ui {
     void beginTurn(boolean blacksTurn, Board board);
+    void endGame(Board board);
     String askCoordinates(boolean blacksTurn);
 }

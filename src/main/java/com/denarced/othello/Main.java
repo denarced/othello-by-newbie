@@ -28,6 +28,8 @@ public class Main {
 
             mVuoro = !mVuoro;
         }
+
+        ui.endGame(board);
         System.out.println("Game over");
     }
 

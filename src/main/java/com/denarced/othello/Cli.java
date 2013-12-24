@@ -53,6 +53,15 @@ public class Cli implements Ui {
 
     @Override
     public void beginTurn(boolean blacksTurn, Board board) {
+        printBoard(board);
+    }
+
+    @Override
+    public void endGame(Board board) {
+        printBoard(board);
+    }
+
+    private void printBoard(Board board) {
         System.out.println("Musta ( " + blacksButton + " ) .. " +
             board.points(CellState.BLACK));
         System.out.println("Valkoinen ( " + whitesButton + " ) .. " +
