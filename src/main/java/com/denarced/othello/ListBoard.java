@@ -144,6 +144,7 @@ public class ListBoard implements Board {
         assert -1 <= ver && ver <= 1;
 
         final CellState player = cellList.get(row).get(col);
+        assert player != CellState.NONE;
         final CellState opponent = (player == CellState.BLACK)
             ? CellState.WHITE
             : CellState.BLACK;
@@ -236,7 +237,7 @@ public class ListBoard implements Board {
         return legalAdds;
     }
 
-    private Map<Coordinate, List<Coordinate>> deriveLegalAdds(CellState cellState) {
+    Map<Coordinate, List<Coordinate>> deriveLegalAdds(CellState cellState) {
         assert cellState != CellState.NONE;
 
         Map<Coordinate, List<Coordinate>> legalAdds =
@@ -244,10 +245,27 @@ public class ListBoard implements Board {
         final int size = cellList.size();
         for (int row = 0; row < size; ++row) {
             for (int col = 0; col < size; ++col) {
-                legalAdds.putAll(deriveLegalAddsFromCoordinate(row, col));
+                if (cellList.get(row).get(col) != cellState) {
+                    continue;
+                }
+                Map<Coordinate, List<Coordinate>> map =
+                    deriveLegalAddsFromCoordinate(row, col);
+                for (Coordinate each: map.keySet()) {
+                    if (legalAdds.containsKey(each)) {
+                        legalAdds.get(each).addAll(map.get(each));
+                        assert listHasNoDuplicates(legalAdds.get(each));
+                    } else {
+                        legalAdds.put(each, map.get(each));
+                    }
+                }
             }
         }
 
         return legalAdds;
+    }
+
+    private boolean listHasNoDuplicates(List<Coordinate> list) {
+        Set<Coordinate> treeSet = new TreeSet<Coordinate>(list);
+        return treeSet.size() == list.size();
     }
 }

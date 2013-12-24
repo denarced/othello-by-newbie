@@ -1,5 +1,9 @@
 package com.denarced.othello;
 
+import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.Console;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +88,15 @@ public class Cli implements Ui {
         System.out.print(blacksTurn ? "Mustan" : "Valkoisen");
         System.out.println(" vuoro");
         System.out.print("Anna koordinaatit: ");
-        return System.console().readLine();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String userName = null;
+        try {
+            userName = br.readLine();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return userName;
     }
 }

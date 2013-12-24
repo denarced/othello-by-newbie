@@ -44,7 +44,7 @@ public class Coordinate implements Comparable<Coordinate> {
 
     @Override
     public String toString() {
-        return String.format("Coordinate(%d,%d).", row, col);
+        return String.format("Coordinate(%d%c)", row + 1, 'A' + col);
     }
 
     @Override

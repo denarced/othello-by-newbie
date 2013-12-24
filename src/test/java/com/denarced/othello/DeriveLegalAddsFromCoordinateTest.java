@@ -14,10 +14,12 @@ public class DeriveLegalAddsFromCoordinateTest {
     private static final CoordinateFactory COORDINATE_FACTORY =
         new CoordinateFactory(SIZE);
     private ListBoard board;
+    private TestUtil util;
 
     @Before
     public void setUp() {
         board = new ListBoard(SIZE, COORDINATE_FACTORY);
+        util = new TestUtil(board, COORDINATE_FACTORY);
     }
 
     /**
@@ -26,20 +28,29 @@ public class DeriveLegalAddsFromCoordinateTest {
     @Test
     public void testBlacksInitialLegalAdds() {
         // EXERCISE
-        Map<Coordinate, List<Coordinate>> legalAdds = derive("4D");
-        legalAdds.putAll(derive("5E"));
+        Map<Coordinate, List<Coordinate>> legalAdds =
+            util.derive("4D");
+        legalAdds.putAll(util.derive("5E"));
 
         // VERIFY
         Map<Coordinate, List<Coordinate>> expected =
             new HashMap<Coordinate, List<Coordinate>>();
 
         // From 4D
-        expected.put(coordinate("4F"), Arrays.asList(coordinate("4E")));
-        expected.put(coordinate("6D"), Arrays.asList(coordinate("5D")));
+        expected.put(
+            util.coordinate("4F"),
+            Arrays.asList(util.coordinate("4E")));
+        expected.put(
+            util.coordinate("6D"),
+            Arrays.asList(util.coordinate("5D")));
 
         // From 5E
-        expected.put(coordinate("3E"), Arrays.asList(coordinate("4E")));
-        expected.put(coordinate("5C"), Arrays.asList(coordinate("5D")));
+        expected.put(
+            util.coordinate("3E"),
+            Arrays.asList(util.coordinate("4E")));
+        expected.put(
+            util.coordinate("5C"),
+            Arrays.asList(util.coordinate("5D")));
 
         assertAddMapEquality(expected, legalAdds);
     }
@@ -50,18 +61,26 @@ public class DeriveLegalAddsFromCoordinateTest {
     @Test
     public void testWhitesInitialLegalAdds() {
         // EXERCISE
-        Map<Coordinate, List<Coordinate>> legalAdds = derive("4E");
-        legalAdds.putAll(derive("5D"));
+        Map<Coordinate, List<Coordinate>> legalAdds = util.derive("4E");
+        legalAdds.putAll(util.derive("5D"));
 
         // VERIFY
         Map<Coordinate, List<Coordinate>> expected =
             new HashMap<Coordinate, List<Coordinate>>();
         // From 4E
-        expected.put(coordinate("4C"), Arrays.asList(coordinate("4D")));
-        expected.put(coordinate("6E"), Arrays.asList(coordinate("5E")));
+        expected.put(
+            util.coordinate("4C"),
+            Arrays.asList(util.coordinate("4D")));
+        expected.put(
+            util.coordinate("6E"),
+            Arrays.asList(util.coordinate("5E")));
         // From 5D
-        expected.put(coordinate("3D"), Arrays.asList(coordinate("4D")));
-        expected.put(coordinate("5F"), Arrays.asList(coordinate("5E")));
+        expected.put(
+            util.coordinate("3D"),
+            Arrays.asList(util.coordinate("4D")));
+        expected.put(
+            util.coordinate("5F"),
+            Arrays.asList(util.coordinate("5E")));
 
         assertAddMapEquality(expected, legalAdds);
     }
@@ -69,25 +88,11 @@ public class DeriveLegalAddsFromCoordinateTest {
     @Test
     public void testCoordinateUtilityMethod() throws Exception {
         // EXERCISE
-        Coordinate coordinate = coordinate("1A");
+        Coordinate coordinate = util.coordinate("1A");
 
         // VERIFY
         Coordinate expected = COORDINATE_FACTORY.getInstance(0, 0);
         Assert.assertEquals(expected, coordinate);
-    }
-
-    private Map<Coordinate, List<Coordinate>> derive(String coordinate) {
-        String lower = coordinate.toLowerCase();
-        return board.deriveLegalAddsFromCoordinate(
-            lower.charAt(0) - '1',
-            lower.charAt(1) - 'a');
-    }
-
-    private Coordinate coordinate(String s) {
-        String lower = s.toLowerCase();
-        return COORDINATE_FACTORY.getInstance(
-            lower.charAt(0) - '1',
-            lower.charAt(1) - 'a');
     }
 
     private void assertAddMapEquality(
