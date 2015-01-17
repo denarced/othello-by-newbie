@@ -1,32 +1,29 @@
 package com.denarced.othello;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Main {
     public static final int SIZE = 8;
-    public static final char VALKOINEN = 'O';
-    public static final char MUSTA = 'X';
-    public static boolean mVuoro = true;
+    public static final char WHITE = 'O';
+    public static final char BLACK = 'X';
+    public static boolean blacksTurn = true;
 
     public static void main(String[] args) {
         final CoordinateFactory coordinateFactory = new CoordinateFactory(SIZE);
         final Board board = new ListBoard(SIZE, coordinateFactory);
-        final Ui ui = new Cli(MUSTA, VALKOINEN, coordinateFactory);
+        final Ui ui = new Cli(BLACK, WHITE, coordinateFactory);
 
         while (board.moveIsPossible()) {
             boolean playerWithTurnCanMove =
-                board.moveIsPossibleFor(mVuoro ? CellState.BLACK : CellState.WHITE);
+                board.moveIsPossibleFor(blacksTurn ? CellState.BLACK : CellState.WHITE);
             if (!playerWithTurnCanMove) {
                 // TODO Tell UI that current player can't move
-                mVuoro = !mVuoro;
+                blacksTurn = !blacksTurn;
             }
 
-            ui.beginTurn(mVuoro, board);
-            CellState turn = mVuoro ? CellState.BLACK : CellState.WHITE;
+            ui.beginTurn(blacksTurn, board);
+            CellState turn = blacksTurn ? CellState.BLACK : CellState.WHITE;
             siirto(ui, board, coordinateFactory, turn);
 
-            mVuoro = !mVuoro;
+            blacksTurn = !blacksTurn;
         }
 
         ui.endGame(board);
@@ -57,7 +54,7 @@ public class Main {
 
         boolean moved = false;
         do {
-            String syote = ui.askCoordinates(mVuoro);
+            String syote = ui.askCoordinates(blacksTurn);
             if (!areCoordinatesValid(syote)) {
                 // TODO Notify UI that coordinates are invalid, try again
                 continue;

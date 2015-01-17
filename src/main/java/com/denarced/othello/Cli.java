@@ -1,8 +1,6 @@
 package com.denarced.othello;
 
-import javax.swing.*;
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,9 +60,9 @@ public class Cli implements Ui {
     }
 
     private void printBoard(Board board) {
-        System.out.println("Musta ( " + blacksButton + " ) .. " +
+        System.out.println("Black ( " + blacksButton + " ) .. " +
             board.points(CellState.BLACK));
-        System.out.println("Valkoinen ( " + whitesButton + " ) .. " +
+        System.out.println("White ( " + whitesButton + " ) .. " +
             board.points(CellState.WHITE));
         System.out.println("  A B C D E F G H");
 
@@ -94,9 +92,9 @@ public class Cli implements Ui {
 
     @Override
     public String askCoordinates(boolean blacksTurn) {
-        System.out.print(blacksTurn ? "Mustan" : "Valkoisen");
-        System.out.println(" vuoro");
-        System.out.print("Anna koordinaatit: ");
+        System.out.print(blacksTurn ? "Black's" : "White's");
+        System.out.println(" turn");
+        System.out.print("Turn (enter coordinates): ");
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String userName = null;
