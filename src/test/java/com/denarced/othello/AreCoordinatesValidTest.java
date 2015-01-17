@@ -60,7 +60,7 @@ public class AreCoordinatesValidTest {
 
     private void exerciseAndVerify(String coordinate, boolean expected) {
         // EXERCISE
-        boolean valid = Main.areCoordinatesValid(coordinate);
+        boolean valid = new Main().areCoordinatesValid(coordinate);
 
         // VERIFY
         Assert.assertEquals(expected, valid);

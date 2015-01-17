@@ -57,6 +57,7 @@ public class Cli implements Ui {
     @Override
     public void endGame(Board board) {
         printBoard(board);
+        System.out.println("Game over");
     }
 
     private void printBoard(Board board) {

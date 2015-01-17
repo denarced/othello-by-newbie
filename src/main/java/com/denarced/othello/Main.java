@@ -4,12 +4,39 @@ public class Main {
     public static final int SIZE = 8;
     public static final char WHITE = 'O';
     public static final char BLACK = 'X';
-    public static boolean blacksTurn = true;
+
+    public boolean blacksTurn = true;
 
     public static void main(String[] args) {
+        new Main().play();
+    }
+
+    /**
+     * Fake Ui class used for testing a whole game quickly.
+     */
+    private static class FakeCli extends Cli {
+        private int currentPosition = 1;
+
+        public FakeCli(char blacksButton, char whitesButton, CoordinateFactory coordinateFactory) {
+            super(blacksButton, whitesButton, coordinateFactory);
+        }
+
+        @Override
+        public String askCoordinates(boolean blacksTurn) {
+            int row = currentPosition / SIZE + 1;
+            int offset = currentPosition % SIZE;
+            char col = (char) ('a' + offset);
+
+            currentPosition++;
+            return "" + col + row;
+        }
+    }
+
+    public void play() {
         final CoordinateFactory coordinateFactory = new CoordinateFactory(SIZE);
         final Board board = new ListBoard(SIZE, coordinateFactory);
         final Ui ui = new Cli(BLACK, WHITE, coordinateFactory);
+//        final Ui ui = new FakeCli(BLACK, WHITE, coordinateFactory);
 
         while (board.moveIsPossible()) {
             boolean playerWithTurnCanMove =
@@ -27,10 +54,9 @@ public class Main {
         }
 
         ui.endGame(board);
-        System.out.println("Game over");
     }
 
-    public static boolean areCoordinatesValid(String coordinates) {
+    boolean areCoordinatesValid(String coordinates) {
         if (coordinates.length() < 2) {
             return false;
         }
@@ -46,7 +72,7 @@ public class Main {
         return validAlpha && validNum;
     }
 
-    public static void siirto(
+    private void siirto(
         Ui ui,
         Board board,
         CoordinateFactory coordinateFactory,
